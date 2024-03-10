@@ -8,25 +8,25 @@
 using namespace std;
 
 // Класс постоянных таблиц
-template <typename type> class table_const
+template <typename type> class TableConst
 {
 private:
     set<type> table;
 public:
     // Конструктор по умолчанию
-    table_const() {}
+    TableConst() {}
     // Деструктор
-    ~table_const()
+    ~TableConst()
     {
         table.clear();
     }
     // Добавление элемента в таблицу
-    inline void add(type elem)
+    inline void Add(type elem)
     {
         table.insert(elem);
     }
     // Чтение таблицы из файла
-    bool read_file(string name)
+    bool ReadFile(string name)
     {
         ifstream fs(name.c_str(), ios::in);
         if(!fs.is_open()) return false;
@@ -34,12 +34,12 @@ public:
         while (!fs.eof())
         {
             fs >> elem;
-            add(elem);
+            Add(elem);
         }
         return true;
     }
     // Проверка есть ли элемент в таблице
-    bool contains(type elem)
+    bool Contains(type elem)
     {
         typename set<type>::iterator it = table.find(elem);
         if(it == table.end()) return false;
@@ -48,7 +48,7 @@ public:
     // Поиск номера по значению
     bool get_num(type elem, int &num)
     {
-        if(!contains(elem)) return false;
+        if(!Contains(elem)) return false;
         num = static_cast<int>(distance(table.begin(), table.find(elem)));
         return true;
     }

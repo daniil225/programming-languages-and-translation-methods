@@ -7,32 +7,32 @@
 using namespace std;
 
 // Класс для хранения идентификаторов и констант
-class lexeme
+class Lexeme
 {
 public:
     // Имя идентификатора или значение константы
-    string name;
+    string Name;
     // Тип, 0 - не определен, 1 - int, 2 - float
-    int type;
+    int Type;
     // Массив флагов "илициализировано ли" размерности dimension
-    vector<bool> is_init;
+    vector<bool> IsInit;
     // Размерность массива, для переменных и констант - 1.
-    int dimension;
+    int Dimension;
     // Конструктор по умолчанию
-    lexeme();
+    Lexeme();
     // Конструктор с заданием имени идентификатора или значения константы
-    lexeme(string new_name);
+    Lexeme(string new_name);
     // Деструктор
-    ~lexeme();
+    ~Lexeme();
     // Оператор присваивания
-    lexeme &operator = (const lexeme &other)
+    Lexeme &operator = (const Lexeme &other)
     {
         if(this != &other)
         {
-            name = other.name;
-            type = other.type;
-            dimension = other.dimension;
-            is_init = other.is_init;
+            Name = other.Name;
+            Type = other.Type;
+            Dimension = other.Dimension;
+            IsInit = other.IsInit;
         }
         return *this;
     }
