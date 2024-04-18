@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Asus Tuf/OneDrive/Документы/GitHub/programming-languages-and-translation-methods/lab2",
-      "program": "c:/Users/Asus Tuf/OneDrive/Документы/GitHub/programming-languages-and-translation-methods/lab2/build/Debug/outDebug",
+      "cwd": "c:/Users/Asus Tuf/OneDrive/Документы/GitHub/programming-languages-and-translation-methods/lpmt_lab03_var07_beta1",
+      "program": "c:/Users/Asus Tuf/OneDrive/Документы/GitHub/programming-languages-and-translation-methods/lpmt_lab03_var07_beta1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

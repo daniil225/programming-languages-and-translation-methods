@@ -1,2 +1,2 @@
-Syntax Error: Unexpected terminal ")"
-Must be: ";" 
+Syntax Error: Unexpected terminal "&&"
+Must be: "+" "-" "*" "==" "!=" "<" ">" ";" "," "]" ")" 
