@@ -1,0 +1,17 @@
+N	Terminals	Jump Accept	Stack Return Error
+1	void int	2	0	0	0	1
+2	void int	10	0	1	0	0
+3	eps	4	0	0	0	1	1   1
+4	eps	-1	0	0	1	1	1   1
+5	void	7	0	0	0	0	0
+6	int	8	0	0	0	0	0   0
+7	void	-1	1	0	1	1	1
+8	int	9	0	0	0	1	1   1
+9	int	-1	1	0	1	1	1   1
+10	void int	5	0	0	0	1
+11	main	12	1	0	0	1	1
+12	(	13	1	0	0	1	1   1
+13	)	14	1	0	0	1	1   1
+14	{	15	1	0	0	1	1   1
+15	var int }	17	0	1	0	1
+16	}	-1	1	0	1	1	1   1

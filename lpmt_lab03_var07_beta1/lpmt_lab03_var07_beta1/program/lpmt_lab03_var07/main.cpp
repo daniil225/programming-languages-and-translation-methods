@@ -46,7 +46,7 @@ int main()
 
     translator a;
     if(!a.analyze_lexical("files/source.txt","files/tokens.txt","files/errors.txt")) return 1;
-    //a.debug_print(cout);
+    a.debug_print(cout);
     if(!a.analyze_syntactical("files/tokens.txt", "files/errors.txt")) return 1;
     a.postfix_print("files/postfix.txt");
     a.debug_print(cout);
