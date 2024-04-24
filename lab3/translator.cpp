@@ -11,7 +11,7 @@ translator::translator()
     keywords.read_file("files/table_keywords.txt");
     separators.read_file("files/table_separators.txt");
     ifstream in_table_parse;
-    in_table_parse.open("files/table_parse.txt", ios::in);
+    in_table_parse.open("../table_parse.txt", ios::in);
     string str;
     getline(in_table_parse, str, '\n');
     struct table_parse_elem te;
