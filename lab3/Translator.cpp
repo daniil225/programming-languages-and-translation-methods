@@ -389,15 +389,15 @@ bool Translator::analyze_syntactical(string Tokens_file, string errors_file)
 
         // Ищем терминалы из списка
         bool find_terminal = false;
-        cout << "Curr Row = " << curr_row << endl;
-        cout << "Token: " << curr_Token;
-        cout << "Token String: " << Token_str << endl;
+        // cout << "Curr Row = " << curr_row << endl;
+        // cout << "Token: " << curr_Token;
+        // cout << "Token String: " << Token_str << endl;
         for(int i = 0; i < (int)table_parse[curr_row].terminal.size() && !find_terminal; i++)
         {
-            cout << "Scan " << table_parse[curr_row].terminal[i] << " : ";
+            //cout << "Scan " << table_parse[curr_row].terminal[i] << " : ";
             if(table_parse[curr_row].terminal[i] == Token_str)
                 find_terminal = true;
-            cout << find_terminal << endl;
+            //cout << find_terminal << endl;
         }
 
         // Если нашли

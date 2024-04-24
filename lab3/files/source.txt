@@ -2,4 +2,5 @@ int main()
 {
     int a,b;
     int c = 56+45;
+    e = 5;
 }
