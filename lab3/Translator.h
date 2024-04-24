@@ -1,5 +1,5 @@
-#ifndef TRANSLATOR_H_INCLUDED
-#define TRANSLATOR_H_INCLUDED
+#ifndef Translator_H_INCLUDED
+#define Translator_H_INCLUDED
 
 #include <iostream>
 #include <sstream>
@@ -7,28 +7,28 @@
 #include <string>
 #include <stack>
 #include <vector>
-#include "table_const.h"
-#include "table_var.h"
-#include "lexeme.h"
-#include "token.h"
+#include "TableConst.h"
+#include "TableVar.h"
+#include "Lexeme.h"
+#include "Token.h"
 
 using namespace std;
 
-class translator
+class Translator
 {
 private:
     // Постоянные таблицы
-    table_const<char> letters;      // 0
-    table_const<char> numbers;      // 1
-    table_const<string> operations; // 2
-    table_const<string> keywords;   // 3
-    table_const<char> separators;   // 4
+    TableConst<char> letters;      // 0
+    TableConst<char> numbers;      // 1
+    TableConst<string> operations; // 2
+    TableConst<string> keywords;   // 3
+    TableConst<char> separators;   // 4
     // Переменные таблицы
-    table_var identifiers;          // 5
-    table_var constants;            // 6
+    TableVar identifiers;          // 5
+    TableVar constants;            // 6
     // Файловые потоки
     ifstream in_source;
-    ofstream out_token;
+    ofstream out_Token;
     ofstream out_error;
     // Анализ строки
     bool analyze_lexical_string(string str);
@@ -54,7 +54,7 @@ private:
     }
     /** Синтаксический анализ    */
     // Определяем какая строка содержится в токене
-    string get_token_text(token get_t);
+    string get_Token_text(Token get_t);
     // Структура элемент таблицы разбора
     struct table_parse_elem
     {
@@ -96,18 +96,18 @@ private:
     // Постфиксная запись
     vector<postfix_elem> postfix_record;
     // Построение постфиксной записи
-    bool make_postfix(vector<token> t);
+    bool make_postfix(vector<Token> t);
 public:
     // Конструктор со вводом постоянных таблиц
-    translator();
+    Translator();
     // Отладочный вывод таблиц
     void debug_print(ostream& stream);
     // Лексический анализ
-    bool analyze_lexical(string file_source, string file_tokens, string file_error);
+    bool analyze_lexical(string file_source, string file_Tokens, string file_error);
     // Синтаксический анализ
-    bool analyze_syntactical(string file_tokens, string file_error);
+    bool analyze_syntactical(string file_Tokens, string file_error);
     // Печать постфиксной записи в файл и на экран
     void postfix_print(string file_tree);
 };
 
-#endif // TRANSLATOR_H_INCLUDED
+#endif // Translator_H_INCLUDED

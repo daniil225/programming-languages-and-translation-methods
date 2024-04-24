@@ -1,9 +1,9 @@
-#include "translator.h"
+#include "Translator.h"
 
 /** ================ Общие функции собственно транслятора ================ */
 
 // Конструктор со вводом постоянных таблиц и таблицы разбора
-translator::translator()
+Translator::Translator()
 {
     letters.read_file("files/table_letters.txt");
     numbers.read_file("files/table_numbers.txt");
@@ -48,7 +48,7 @@ translator::translator()
 }
 
 // Отладочный вывод таблиц
-void translator::debug_print(ostream& stream)
+void Translator::debug_print(ostream& stream)
 {
     stream << "ID`s:" << endl;
     identifiers.debug_print(stream);
@@ -59,10 +59,10 @@ void translator::debug_print(ostream& stream)
 /** ================ Функции лексического анализатора ================ */
 
 // Лексический анализ
-bool translator::analyze_lexical(string file_source, string file_tokens, string file_error)
+bool Translator::analyze_lexical(string file_source, string file_Tokens, string file_error)
 {
     in_source.open(file_source.c_str(), ios::in);
-    out_token.open(file_tokens.c_str(), ios::out);
+    out_Token.open(file_Tokens.c_str(), ios::out);
     out_error.open(file_error.c_str(), ios::out);
     bool flag_error = false;
     string str;
@@ -91,13 +91,13 @@ bool translator::analyze_lexical(string file_source, string file_tokens, string 
         }
     }
     in_source.close();
-    out_token.close();
+    out_Token.close();
     out_error.close();
     return !flag_error;
 }
 
 // Очистка от комментариев
-bool translator::analyze_lexical_decomment(string& str, bool is_changed)
+bool Translator::analyze_lexical_decomment(string& str, bool is_changed)
 {
     if(str.size())
     {
@@ -178,7 +178,7 @@ bool translator::analyze_lexical_decomment(string& str, bool is_changed)
 }
 
 // Анализ строки
-bool translator::analyze_lexical_string(string str)
+bool Translator::analyze_lexical_string(string str)
 {
     trim(str);
     bool flag_error = false;
@@ -232,14 +232,14 @@ bool translator::analyze_lexical_string(string str)
             if(keywords.contains(idname)) // Если ключевое слово
             {
                 if(keywords.get_num(idname, i))
-                    out_token << token(3, i, -1);
+                    out_Token << Token(3, i, -1);
             }
             else // Иначе в таблицу идентификаторов
             {
                 identifiers.add(idname);
                 int table, chain;
                 identifiers.get_location(idname, table, chain);
-                out_token << token(5, table, chain);
+                out_Token << Token(5, table, chain);
             }
             return analyze_lexical_string(str);
         }
@@ -283,7 +283,7 @@ bool translator::analyze_lexical_string(string str)
                 constants.add(constval);
                 int table=-100, chain=-100;
                 constants.get_location(constval, table, chain);
-                out_token << token(6, table, chain);
+                out_Token << Token(6, table, chain);
             }
             return analyze_lexical_string(str);
         }
@@ -294,7 +294,7 @@ bool translator::analyze_lexical_string(string str)
             if(operations.contains(str_2)) // Двухсимвольная
             {
                 operations.get_num(str_2, table);
-                out_token << token(2, table, -1);
+                out_Token << Token(2, table, -1);
                 str.erase(0, 2);
                 trim(str);
                 return analyze_lexical_string(str);
@@ -302,7 +302,7 @@ bool translator::analyze_lexical_string(string str)
             if(operations.contains(str_1)) // Односимвольная
             {
                 operations.get_num(str_1, table);
-                out_token << token(2, table, -1);
+                out_Token << Token(2, table, -1);
                 str.erase(0, 1);
                 trim(str);
                 return analyze_lexical_string(str);
@@ -313,7 +313,7 @@ bool translator::analyze_lexical_string(string str)
         {
             int table;
             separators.get_num((const char)str[0], table);
-            out_token << token(4, table, -1);
+            out_Token << Token(4, table, -1);
             str.erase(0, 1);
             trim(str);
             return analyze_lexical_string(str);
@@ -334,11 +334,11 @@ bool translator::analyze_lexical_string(string str)
 /** ================ Функции синтаксического анализатора ================ */
 
 // Получение строки, на которую указывает токен
-string translator::get_token_text(token t)
+string Translator::get_Token_text(Token t)
 {
     string str = "";
     char sym = '\0';
-    lexeme l("");
+    Lexeme l("");
     switch(t.table)
     {
     case 2:
@@ -352,50 +352,50 @@ string translator::get_token_text(token t)
         str.append(&sym, 1);
         return str;
     case 5:
-        identifiers.get_lexeme(t.place, t.chain, l);
+        identifiers.get_Lexeme(t.place, t.chain, l);
         return l.name;
     case 6:
-        constants.get_lexeme(t.place, t.chain, l);
+        constants.get_Lexeme(t.place, t.chain, l);
         return l.name;
     }
     return str;
 }
 
 // Синтаксический анализатор
-bool translator::analyze_syntactical(string tokens_file, string errors_file)
+bool Translator::analyze_syntactical(string Tokens_file, string errors_file)
 {
-    ifstream in_token(tokens_file.c_str(), ios::in);
+    ifstream in_Token(Tokens_file.c_str(), ios::in);
     out_error.open(errors_file.c_str(), ios::out);
-    token curr_token, next_token;
+    Token curr_Token, next_Token;
     stack<int> parse_stack;
     bool error_flag = false;
     int curr_row = 0;
     bool have_type = false; // Находимся ли мы в строке с объявлением типа
     int type_type;          // Если находимся, то какой тип объявляем
     bool need_postfix = false;      // Нужно ли выполнять построение постфиксной записи для данной строки
-    vector<token> code_expr_infix;  // Если да, то сюда помещаем токены в инфиксном (обычном) порядке
+    vector<Token> code_expr_infix;  // Если да, то сюда помещаем токены в инфиксном (обычном) порядке
     bool need_array_resize = false;         // Объявляем ли мы сейчас размер массива
-    vector<token> array_resize_expr_infix;  // Если да, то сюда помещаем токены в инфиксном (обычном) порядке
-    bool eof_flag = in_token.eof();    // Флаг конца файла (чтобы считать последний токен)
+    vector<Token> array_resize_expr_infix;  // Если да, то сюда помещаем токены в инфиксном (обычном) порядке
+    bool eof_flag = in_Token.eof();    // Флаг конца файла (чтобы считать последний токен)
 
-    in_token >> curr_token >> next_token;
+    in_Token >> curr_Token >> next_Token;
     while(!eof_flag && !error_flag)
     {
-        string token_str = get_token_text(curr_token);
-        trim(token_str);
+        string Token_str = get_Token_text(curr_Token);
+        trim(Token_str);
 
-        if(curr_token.table == 5) token_str = "var";
-        if(curr_token.table == 6) token_str = "const";
+        if(curr_Token.table == 5) Token_str = "var";
+        if(curr_Token.table == 6) Token_str = "const";
 
         // Ищем терминалы из списка
         bool find_terminal = false;
         cout << "Curr Row = " << curr_row << endl;
-        cout << "Token: " << curr_token;
-        cout << "Token String: " << token_str << endl;
+        cout << "Token: " << curr_Token;
+        cout << "Token String: " << Token_str << endl;
         for(int i = 0; i < (int)table_parse[curr_row].terminal.size() && !find_terminal; i++)
         {
             cout << "Scan " << table_parse[curr_row].terminal[i] << " : ";
-            if(table_parse[curr_row].terminal[i] == token_str)
+            if(table_parse[curr_row].terminal[i] == Token_str)
                 find_terminal = true;
             cout << find_terminal << endl;
         }
@@ -408,19 +408,19 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
 
             if(table_parse[curr_row].accept)
             {
-                if((token_str == "var" || token_str == "const") &&
-                                (get_token_text(next_token) == "=" ||
-                                (get_token_text(next_token) == "[" && !have_type)))
+                if((Token_str == "var" || Token_str == "const") &&
+                                (get_Token_text(next_Token) == "=" ||
+                                (get_Token_text(next_Token) == "[" && !have_type)))
                     need_postfix = true;
 
-                if((token_str == "var" || token_str == "const") && have_type && get_token_text(next_token) == "[")
+                if((Token_str == "var" || Token_str == "const") && have_type && get_Token_text(next_Token) == "[")
                     need_array_resize = true;
 
                 // Обработка необъявленного типа
-                if(!have_type && token_str == "var")
+                if(!have_type && Token_str == "var")
                 {
-                    lexeme lex_var;
-                    identifiers.get_lexeme(curr_token.place, curr_token.chain, lex_var);
+                    Lexeme lex_var;
+                    identifiers.get_Lexeme(curr_Token.place, curr_Token.chain, lex_var);
                     if(lex_var.type == 0)
                     {
                         error_flag = true;
@@ -436,15 +436,15 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
                     int one_hash, one_chain;
                     constants.add("-1");
                     constants.get_location("-1", one_hash, one_chain);
-                    code_expr_infix.push_back(token(6, one_hash, one_chain));
+                    code_expr_infix.push_back(Token(6, one_hash, one_chain));
                     int mult_pos;
                     operations.get_num("*", mult_pos);
-                    code_expr_infix.push_back(token(2, mult_pos, -1));
+                    code_expr_infix.push_back(Token(2, mult_pos, -1));
                     flag_unary_minus = true;
                 }
 
                 if(need_postfix && !flag_unary_minus)
-                    code_expr_infix.push_back(curr_token);
+                    code_expr_infix.push_back(curr_Token);
 
                 // Обработка унарного минуса
                 flag_unary_minus = false;
@@ -453,26 +453,26 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
                     int one_hash, one_chain;
                     constants.add("-1");
                     constants.get_location("-1", one_hash, one_chain);
-                    array_resize_expr_infix.push_back(token(6, one_hash, one_chain));
+                    array_resize_expr_infix.push_back(Token(6, one_hash, one_chain));
                     int mult_pos;
                     operations.get_num("*", mult_pos);
-                    array_resize_expr_infix.push_back(token(2, mult_pos, -1));
+                    array_resize_expr_infix.push_back(Token(2, mult_pos, -1));
                     flag_unary_minus = true;
                 }
 
                 if(need_array_resize && !flag_unary_minus)
                 {
-                    array_resize_expr_infix.push_back(curr_token);
-                    if(token_str == "=" || token_str == "+=" || token_str == "-=" || token_str == "*=")
+                    array_resize_expr_infix.push_back(curr_Token);
+                    if(Token_str == "=" || Token_str == "+=" || Token_str == "-=" || Token_str == "*=")
                     {
                         error_flag = true;
-                        out_error << "Syntax Error: Can`t assign to array \"" << get_token_text(array_resize_expr_infix[0]) << "\"" << endl;
-                        cerr << "Syntax Error: Can`t assign to array \"" << get_token_text(array_resize_expr_infix[0]) << "\"" << endl;
+                        out_error << "Syntax Error: Can`t assign to array \"" << get_Token_text(array_resize_expr_infix[0]) << "\"" << endl;
+                        cerr << "Syntax Error: Can`t assign to array \"" << get_Token_text(array_resize_expr_infix[0]) << "\"" << endl;
                     }
                 }
 
                 // Если закончили разбор присваивания или части объявления
-                if(token_str == ";" || token_str == ",")
+                if(Token_str == ";" || Token_str == ",")
                 {
                     // Добавим все, что разобрали, в постфиксную запись
                     if(!make_postfix(code_expr_infix))
@@ -490,27 +490,27 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
                 }
 
                 // Если закончили разбор объявления, сбросим флаг объявления
-                if(token_str == ";")
+                if(Token_str == ";")
                     have_type = false;
 
                 // Если попался тип, запоминаем его
-                if(token_str == "int" || token_str == "float")
+                if(Token_str == "int" || Token_str == "float")
                 {
                     have_type = true;
-                    if(token_str == "int")
+                    if(Token_str == "int")
                         type_type = 1;
-                    if(token_str == "float")
+                    if(Token_str == "float")
                         type_type = 2;
                 }
 
                 // Заносим тип в таблицу идентификаторов
-                if(token_str == "var" && have_type && curr_row == 69)
-                    identifiers.set_type(get_token_text(curr_token), type_type);
+                if(Token_str == "var" && have_type && curr_row == 69)
+                    identifiers.set_type(get_Token_text(curr_Token), type_type);
 
-                eof_flag = in_token.eof();
-                curr_token = next_token;
+                eof_flag = in_Token.eof();
+                curr_Token = next_Token;
                 if(!eof_flag)
-                    in_token >> next_token;
+                    in_Token >> next_Token;
             }
 
             if(table_parse[curr_row].return_)
@@ -524,11 +524,11 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
                 {
                     error_flag = true;
                     cerr << "Syntax Error: Parse stack is empty!" << endl;
-                    cerr << "Return requested by row " << curr_row << " at token " << curr_token
-                         << " (value = \"" << get_token_text(curr_token) << "\")" << endl;
+                    cerr << "Return requested by row " << curr_row << " at Token " << curr_Token
+                         << " (value = \"" << get_Token_text(curr_Token) << "\")" << endl;
                     out_error << "Syntax Error: Parse stack is empty!" << endl;
-                    out_error << "Return requested by row " << curr_row << " at token " << curr_token
-                         << " (value = \"" << get_token_text(curr_token) << "\")" << endl;
+                    out_error << "Return requested by row " << curr_row << " at Token " << curr_Token
+                         << " (value = \"" << get_Token_text(curr_Token) << "\")" << endl;
                 }
             }
             else
@@ -540,12 +540,12 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
             if(table_parse[curr_row].error)
             {
                 error_flag = true;
-                out_error << "Syntax Error: Unexpected terminal \"" << get_token_text(curr_token) << "\"" << endl;
+                out_error << "Syntax Error: Unexpected terminal \"" << get_Token_text(curr_Token) << "\"" << endl;
                 out_error << "Must be: ";
                 for(int i = 0; i < (int)table_parse[curr_row].terminal.size(); i++)
                     out_error << "\"" << table_parse[curr_row].terminal[i] << "\" ";
                 out_error << endl;
-                cerr << "Syntax Error: Unexpected terminal \"" << get_token_text(curr_token) << "\"" << endl;
+                cerr << "Syntax Error: Unexpected terminal \"" << get_Token_text(curr_Token) << "\"" << endl;
                 cerr << "Must be: ";
                 for(int i = 0; i < (int)table_parse[curr_row].terminal.size(); i++)
                     cerr << "\"" << table_parse[curr_row].terminal[i] << "\" ";
@@ -578,13 +578,13 @@ bool translator::analyze_syntactical(string tokens_file, string errors_file)
         out_error << endl;
     }
 
-    in_token.close();
+    in_Token.close();
     out_error.close();
     return !error_flag;
 }
 
 // Построение постфиксной записи
-bool translator::make_postfix(vector<token> t)
+bool Translator::make_postfix(vector<Token> t)
 {
     stack<string> stack_temp;
     bool error_flag = false;
@@ -592,18 +592,18 @@ bool translator::make_postfix(vector<token> t)
     while(index < (int)t.size() && !error_flag)
     {
         int i;
-        for(i = index; i < (int)t.size() && !error_flag && get_token_text(t[i]) != ";" && get_token_text(t[i]) != ","; i++)
+        for(i = index; i < (int)t.size() && !error_flag && get_Token_text(t[i]) != ";" && get_Token_text(t[i]) != ","; i++)
         {
-            string token_text = get_token_text(t[i]);
+            string Token_text = get_Token_text(t[i]);
             if(t[i].table == 5 || t[i].table == 6)
             {
-                postfix_record.push_back(postfix_elem(token_text));
+                postfix_record.push_back(postfix_elem(Token_text));
             }
-            else if(token_text == "(" || token_text == "[")
+            else if(Token_text == "(" || Token_text == "[")
             {
-                stack_temp.push(token_text);
+                stack_temp.push(Token_text);
             }
-            else if(token_text == ")")
+            else if(Token_text == ")")
             {
                 while(!stack_temp.empty() && stack_temp.top() != "(")
                 {
@@ -622,7 +622,7 @@ bool translator::make_postfix(vector<token> t)
                     stack_temp.pop();
                 }
             }
-            else if(token_text == "]")
+            else if(Token_text == "]")
             {
                 while(!stack_temp.empty() && stack_temp.top() != "[")
                 {
@@ -644,13 +644,13 @@ bool translator::make_postfix(vector<token> t)
             }
             else if(t[i].table == 2)
             {
-                while(!stack_temp.empty() && priority_le(token_text, stack_temp.top()))
+                while(!stack_temp.empty() && priority_le(Token_text, stack_temp.top()))
                 {
                     string tmpstr = stack_temp.top();
                     postfix_record.push_back(postfix_elem(tmpstr));
                     stack_temp.pop();
                 }
-                stack_temp.push(token_text);
+                stack_temp.push(Token_text);
             }
         }
         if(error_flag)
@@ -691,7 +691,7 @@ bool translator::make_postfix(vector<token> t)
 }
 
 // Печать постфиксной записи в файл и на экран
-void translator::postfix_print(string file_tree)
+void Translator::postfix_print(string file_tree)
 {
     ofstream out(file_tree.c_str());
     cout << "Postfix notation:" << endl;
@@ -705,7 +705,7 @@ void translator::postfix_print(string file_tree)
 }
 
 // Сравнение приоритетов операций
-bool translator::priority_le(string what, string with_what)
+bool Translator::priority_le(string what, string with_what)
 {
     int pw = 0, pww = 0;
     if(what == "=" || what == "+=" || what == "-=" || what == "*=") pw = 10;

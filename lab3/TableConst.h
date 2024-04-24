@@ -1,5 +1,5 @@
-#ifndef TABLE_CONST_H_INCLUDED
-#define TABLE_CONST_H_INCLUDED
+#ifndef TableConst_H_INCLUDED
+#define TableConst_H_INCLUDED
 
 #include <fstream>
 #include <string>
@@ -8,15 +8,15 @@
 using namespace std;
 
 // Класс постоянных таблиц
-template <typename type> class table_const
+template <typename type> class TableConst
 {
 private:
     set<type> table;
 public:
     // Конструктор по умолчанию
-    table_const() {}
+    TableConst() {}
     // Деструктор
-    ~table_const()
+    ~TableConst()
     {
         table.clear();
     }
@@ -64,4 +64,4 @@ public:
     }
 };
 
-#endif // TABLE_CONST_H_INCLUDED
+#endif // TableConst_H_INCLUDED

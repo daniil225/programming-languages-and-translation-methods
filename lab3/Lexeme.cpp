@@ -1,10 +1,10 @@
-#include "lexeme.h"
+#include "Lexeme.h"
 
 // Конструктор по умолчанию
-lexeme::lexeme() {}
+Lexeme::Lexeme() {}
 
 // Конструктор с заданием имени идентификатора или значения константы
-lexeme::lexeme(string new_name)
+Lexeme::Lexeme(string new_name)
 {
     name = new_name;
     type = 0;
@@ -13,7 +13,7 @@ lexeme::lexeme(string new_name)
 }
 
 // Деструктор
-lexeme::~lexeme()
+Lexeme::~Lexeme()
 {
     is_init.clear();
 }

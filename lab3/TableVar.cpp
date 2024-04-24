@@ -1,9 +1,9 @@
-#include "table_var.h"
+#include "TableVar.h"
 // Размер хэш-таблицы по умолчанию
 #define default_hashnum 100
 
 // Подсчет хэша
-int table_var::get_hash(string name)
+int TableVar::get_hash(string name)
 {
     int hash = 0;
     for(int i = 0; i < (int)name.size(); i++)
@@ -12,7 +12,7 @@ int table_var::get_hash(string name)
 }
 
 // Подсчет номера в цепочке
-int table_var::get_chain(string name)
+int TableVar::get_chain(string name)
 {
     for(int i = 0, h = get_hash(name); i < (int)table[h].size(); i++)
         if(name == table[h][i].name) return i;
@@ -20,21 +20,21 @@ int table_var::get_chain(string name)
 }
 
 // Конструктор с размером таблицы по умолчанию
-table_var::table_var()
+TableVar::TableVar()
 {
     hashnum=default_hashnum;
-    table = new vector<lexeme> [hashnum];
+    table = new vector<Lexeme> [hashnum];
 }
 
 // Конструктор с пользовательским размером таблицы
-table_var::table_var(int new_hashnum)
+TableVar::TableVar(int new_hashnum)
 {
     hashnum=new_hashnum;
-    table = new vector<lexeme> [hashnum];
+    table = new vector<Lexeme> [hashnum];
 }
 
 // Деструктор
-table_var::~table_var()
+TableVar::~TableVar()
 {
     for(int i = 0; i < hashnum; i++)
         table[i].clear();
@@ -42,23 +42,23 @@ table_var::~table_var()
 }
 
 // Проверка есть ли элемент в таблице
-inline bool table_var::contains(string name)
+inline bool TableVar::contains(string name)
 {
     if(get_chain(name) != -1) return true;
     return false;
 }
 
 // Добавление нового имени идентификатора или значения константы
-bool table_var::add(string name)
+bool TableVar::add(string name)
 {
     if(contains(name)) return false;
     int h = get_hash(name);
-    table[h].push_back(lexeme(name));
+    table[h].push_back(Lexeme(name));
     return true;
 }
 
 // Задание типа по хэшу и номеру в цепочке
-bool table_var::set_type(int hash, int chain, int type)
+bool TableVar::set_type(int hash, int chain, int type)
 {
     if(chain == -1) return false;
     table[hash][chain].type = type;
@@ -66,14 +66,14 @@ bool table_var::set_type(int hash, int chain, int type)
 }
 
 // Задание типа по имени идентификатора или значению константы
-bool table_var::set_type(string name, int type)
+bool TableVar::set_type(string name, int type)
 {
     int hash = get_hash(name), chain = get_chain(name);
     return set_type(hash, chain, type);
 }
 
 // Задание размерности по хэшу и номеру в цепочке
-bool table_var::set_dimension(int hash, int chain, int dimension)
+bool TableVar::set_dimension(int hash, int chain, int dimension)
 {
     if(chain == -1) return false;
     table[hash][chain].dimension = dimension;
@@ -84,14 +84,14 @@ bool table_var::set_dimension(int hash, int chain, int dimension)
 }
 
 // Задание размерности по имени идентификатора или значению константы
-bool table_var::set_dimension(string name, int dimension)
+bool TableVar::set_dimension(string name, int dimension)
 {
     int hash = get_hash(name), chain = get_chain(name);
     return set_dimension(hash, chain, dimension);
 }
 
 // Задание флага инициализации для массивов по хэшу и номеру в цепочке
-bool table_var::set_is_init(int hash, int chain, bool is_init, int init_index)
+bool TableVar::set_is_init(int hash, int chain, bool is_init, int init_index)
 {
     if(chain == -1) return false;
     table[hash][chain].is_init[init_index] = is_init;
@@ -99,26 +99,26 @@ bool table_var::set_is_init(int hash, int chain, bool is_init, int init_index)
 }
 
 // Задание флага инициализации для массивов по имени идентификатора или значению константы
-bool table_var::set_is_init(string name, bool is_init, int init_index)
+bool TableVar::set_is_init(string name, bool is_init, int init_index)
 {
     int hash = get_hash(name), chain = get_chain(name);
     return set_is_init(hash, chain, is_init, init_index);
 }
 
 // Задание флага инициализации по хэшу и номеру в цепочке
-bool table_var::set_is_init(int hash, int chain, bool is_init)
+bool TableVar::set_is_init(int hash, int chain, bool is_init)
 {
     return set_is_init(hash, chain, is_init, 0);
 }
 
 // Задание флага инициализации по имени идентификатора или значению константы
-bool table_var::set_is_init(string name, bool is_init)
+bool TableVar::set_is_init(string name, bool is_init)
 {
     return set_is_init(name, is_init, 0);
 }
 
 // Определение хэша и номера в цепочке
-bool table_var::get_location(string name, int &hash, int &chain)
+bool TableVar::get_location(string name, int &hash, int &chain)
 {
     int h = get_hash(name), c = get_chain(name);
     if(c == -1) return false;
@@ -127,23 +127,23 @@ bool table_var::get_location(string name, int &hash, int &chain)
     return true;
 }
 
-// Получение структуры lexeme по хэшу и номеру в цепочке
-bool table_var::get_lexeme(int hash, int chain, lexeme &lexeme)
+// Получение структуры Lexeme по хэшу и номеру в цепочке
+bool TableVar::get_Lexeme(int hash, int chain, Lexeme &Lexeme)
 {
     if(chain == -1) return false;
-    lexeme = table[hash][chain];
+    Lexeme = table[hash][chain];
     return true;
 }
 
-// Получение структуры lexeme по имени идентификатора или значению константы
-bool table_var::get_lexeme(string name, lexeme &lexeme)
+// Получение структуры Lexeme по имени идентификатора или значению константы
+bool TableVar::get_Lexeme(string name, Lexeme &Lexeme)
 {
     int hash = get_hash(name), chain = get_chain(name);
-    return get_lexeme(hash, chain, lexeme);
+    return get_Lexeme(hash, chain, Lexeme);
 }
 
 // Отладочная печать
-void table_var::debug_print(ostream& stream)
+void TableVar::debug_print(ostream& stream)
 {
     for(int i = 0; i < hashnum; i++)
     {

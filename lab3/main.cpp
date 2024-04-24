@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdio.h>
-#include "table_const.h"
-#include "table_var.h"
-#include "translator.h"
+#include "TableConst.h"
+#include "TableVar.h"
+#include "Translator.h"
 
 using namespace std;
 
@@ -44,7 +44,7 @@ int main()
     cout << "c.is_init[1] = " << c.is_init[1] << endl;
     cout << "c.is_init[2] = " << c.is_init[2] << endl;*/
 
-    translator a;
+    Translator a;
     if(!a.analyze_lexical("files/source.txt","files/tokens.txt","files/errors.txt")) return 1;
     a.debug_print(cout);
     if(!a.analyze_syntactical("files/tokens.txt", "files/errors.txt")) return 1;

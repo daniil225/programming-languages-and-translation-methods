@@ -1,5 +1,5 @@
-#ifndef LEXEME_H_INCLUDED
-#define LEXEME_H_INCLUDED
+#ifndef Lexeme_H_INCLUDED
+#define Lexeme_H_INCLUDED
 
 #include <string>
 #include <vector>
@@ -7,7 +7,7 @@
 using namespace std;
 
 // Класс для хранения идентификаторов и констант
-class lexeme
+class Lexeme
 {
 public:
     // Имя идентификатора или значение константы
@@ -19,13 +19,13 @@ public:
     // Размерность массива, для переменных и констант - 1.
     int dimension;
     // Конструктор по умолчанию
-    lexeme();
+    Lexeme();
     // Конструктор с заданием имени идентификатора или значения константы
-    lexeme(string new_name);
+    Lexeme(string new_name);
     // Деструктор
-    ~lexeme();
+    ~Lexeme();
     // Оператор присваивания
-    lexeme &operator = (const lexeme &other)
+    Lexeme &operator = (const Lexeme &other)
     {
         if(this != &other)
         {
@@ -38,4 +38,4 @@ public:
     }
 };
 
-#endif // LEXEME_H_INCLUDED
+#endif // Lexeme_H_INCLUDED
